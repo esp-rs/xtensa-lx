@@ -1,0 +1,12 @@
+[package]
+name = "xtensa-lx6"
+version = "0.1.0"
+authors = ["Scott Mabin <scott@mabez.dev>"]
+edition = "2018"
+links = "xtensa-lx6" # prevent multiple versions of this crate to be linked together
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+r0 = "1.0.0"
+bare-metal = { version = "0.2.0", features = ["const-fn"] }
