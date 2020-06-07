@@ -1,6 +1,11 @@
 [package]
 name = "xtensa-lx6"
 version = "0.1.0"
+categories = ["embedded", "hardware-support", "no-std"]
+keywords = ["xtensa", "lx6", "register", "peripheral"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/esp-rs/xtensa-lx6"
 authors = ["Scott Mabin <scott@mabez.dev>", "Arjan Mels <arjan@mels.email>"]
 edition = "2018"
 links = "xtensa-lx6" # prevent multiple versions of this crate to be linked together
