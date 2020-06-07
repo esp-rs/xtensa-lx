@@ -5,6 +5,7 @@
 #![feature(core_intrinsics)]
 
 pub mod interrupt;
+pub mod mutex;
 
 #[macro_use]
 mod macros;
