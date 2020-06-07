@@ -1,8 +1,5 @@
 #![no_std]
 #![feature(llvm_asm)]
-#![feature(global_asm)]
-#![feature(naked_functions)]
-#![feature(core_intrinsics)]
 
 pub mod interrupt;
 
