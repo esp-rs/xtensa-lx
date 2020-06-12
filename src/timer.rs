@@ -20,27 +20,30 @@ pub fn get_ccompare2() -> u32 {
 }
 
 #[inline]
-pub fn set_ccompare0(val: u32){
-    unsafe { llvm_asm!("
+pub fn set_ccompare0(val: u32) {
+    unsafe {
+        llvm_asm!("
         wsr.ccompare0 $0
         isync
-        " :: "r"(val):::: "volatile" ) 
+        " :: "r"(val):::: "volatile" )
     };
 }
 #[inline]
-pub fn set_ccompare1(val: u32){
-    unsafe { llvm_asm!("
+pub fn set_ccompare1(val: u32) {
+    unsafe {
+        llvm_asm!("
         wsr.ccompare1 $0
         isync
-        " :: "r"(val):::: "volatile" ) 
+        " :: "r"(val):::: "volatile" )
     };
 }
 #[inline]
-pub fn set_ccompare2(val: u32){
-    unsafe { llvm_asm!("
+pub fn set_ccompare2(val: u32) {
+    unsafe {
+        llvm_asm!("
         wsr.ccompare2 $0
         isync
-        " :: "r"(val):::: "volatile" ) 
+        " :: "r"(val):::: "volatile" )
     };
 }
 
