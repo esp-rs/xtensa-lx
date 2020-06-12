@@ -20,6 +20,45 @@ pub fn get_cycle_count() -> u32 {
     x
 }
 
+/// Cycle count compare register
+pub enum CycleCompare {
+    Register0,
+    Register1,
+    Register2,
+}
+
+/// Set cycle count compare
+#[inline]
+pub fn set_cycle_compare(compare_register: CycleCompare, value: u32) {
+    unsafe {
+        match compare_register {
+            CycleCompare::Register0 => {
+                llvm_asm!("wsr.ccompare0 $0; isync" ::"r"(value):: "volatile" )
+            }
+            CycleCompare::Register1 => {
+                llvm_asm!("wsr.ccompare1 $0; isync" ::"r"(value):: "volatile" )
+            }
+            CycleCompare::Register2 => {
+                llvm_asm!("wsr.ccompare2 $0; isync" ::"r"(value):: "volatile" )
+            }
+        }
+    };
+}
+
+/// Get cycle count compare
+#[inline]
+pub fn get_cycle_compare(compare_register: CycleCompare) -> u32 {
+    let x;
+    unsafe {
+        match compare_register {
+            CycleCompare::Register0 => llvm_asm!("rsr.ccompare0 $0" :"=r"(x)::: "volatile" ),
+            CycleCompare::Register1 => llvm_asm!("rsr.ccompare1 $0" :"=r"(x)::: "volatile" ),
+            CycleCompare::Register2 => llvm_asm!("rsr.ccompare2 $0" :"=r"(x)::: "volatile" ),
+        }
+    };
+    x
+}
+
 /// Get the core stack pointer
 #[inline(always)]
 pub fn get_stack_pointer() -> *const u32 {
