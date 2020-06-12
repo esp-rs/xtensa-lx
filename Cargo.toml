@@ -1,6 +1,7 @@
 [package]
 name = "xtensa-lx6"
 version = "0.1.0"
+description = "Low level access for xtensa lx6 processors and peripherals"
 categories = ["embedded", "hardware-support", "no-std"]
 keywords = ["xtensa", "lx6", "register", "peripheral"]
 license = "MIT OR Apache-2.0"
