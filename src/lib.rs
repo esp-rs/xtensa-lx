@@ -13,14 +13,6 @@ pub unsafe fn set_vecbase(base: *const u32) {
     llvm_asm!("wsr.vecbase $0" ::"r"(base) :: "volatile");
 }
 
-/// Get the core cycle count
-#[inline]
-pub fn get_cycle_count() -> u32 {
-    let x: u32;
-    unsafe { llvm_asm!("rsr.ccount $0" : "=r"(x) ::: "volatile" ) };
-    x
-}
-
 /// Get the core stack pointer
 #[inline(always)]
 pub fn get_stack_pointer() -> *const u32 {
@@ -59,17 +51,6 @@ pub fn get_program_counter() -> *const u32 {
             " : "=r"(x),"=r"(_y)::"a0" : "volatile" )
     };
     x
-}
-
-/// cycle accurate delay using the cycle counter register
-#[inline]
-pub fn delay(clocks: u32) {
-    let start = get_cycle_count();
-    loop {
-        if get_cycle_count().wrapping_sub(start) >= clocks {
-            break;
-        }
-    }
 }
 
 /// Get the id of the current core
