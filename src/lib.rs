@@ -2,6 +2,7 @@
 #![feature(llvm_asm)]
 
 pub mod interrupt;
+pub mod mutex;
 pub mod timer;
 
 #[macro_use]
