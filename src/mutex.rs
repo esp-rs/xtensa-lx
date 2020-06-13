@@ -1,8 +1,4 @@
-//! Implementation of a critical section based mutex that also implements the `mutex-trait`.
-//!
-//! ## Safety
-//!
-//! Note that this is only safe in single core applications.
+//! A series of Mutex's that also implements the `mutex-trait`.
 
 use core::cell::UnsafeCell;
 
@@ -36,7 +32,13 @@ impl<T> mutex_trait::Mutex for &'_ CriticalSectionSpinLockMutex<T> {
 // execution contexts (e.g. interrupts)
 unsafe impl<T> Sync for CriticalSectionSpinLockMutex<T> where T: Send {}
 
-/// A critical section based mutex.
+/// A Mutex based on critical sections
+///
+/// # Safety
+///
+/// **This Mutex is only safe on single-core applications.**
+///
+/// A `CriticalSection` **is not sufficient** to ensure exclusive access across cores.
 pub struct CriticalSectionMutex<T> {
     data: UnsafeCell<T>,
 }
