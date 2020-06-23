@@ -130,3 +130,28 @@ where
 
     r
 }
+
+
+pub trait InterruptMatrix
+{
+    type CpuInterruptStorage;
+    type PriorityStorage;
+
+    /// Mask an enabled interrupt
+    fn mask<I: bare_metal::Nr>(interrupt: I);
+
+    /// Unmask an enabled interrupt
+    fn unmask<I: bare_metal::Nr>(interrupt: I);
+
+    /// Enable an interrupt and assign to a CPU interrupt with a priority
+    fn enable<I: bare_metal::Nr>(interrupt: I, cpu_intr: Self::CpuInterruptStorage, prio: Self::PriorityStorage);
+
+    /// Disable an interrupt
+    fn disable<I: bare_metal::Nr>(interrupt: I);
+
+    /// Pend an interrupt
+    fn pend<I: bare_metal::Nr>(interrupt: I);
+
+    /// Unpend an interrupt
+    fn unpend<I: bare_metal::Nr>(interrupt: I);
+}
