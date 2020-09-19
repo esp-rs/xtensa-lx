@@ -6,12 +6,14 @@ pub fn get_ccompare0() -> u32 {
     unsafe { llvm_asm!("rsr.ccompare0 $0" : "=r"(x) ::: "volatile" ) };
     x
 }
+#[cfg(feature = "extra_ccompare")]
 #[inline]
 pub fn get_ccompare1() -> u32 {
     let x: u32;
     unsafe { llvm_asm!("rsr.ccompare1 $0" : "=r"(x) ::: "volatile" ) };
     x
 }
+#[cfg(feature = "extra_ccompare")]
 #[inline]
 pub fn get_ccompare2() -> u32 {
     let x: u32;
@@ -28,6 +30,7 @@ pub fn set_ccompare0(val: u32) {
         " :: "r"(val):::: "volatile" )
     };
 }
+#[cfg(feature = "extra_ccompare")]
 #[inline]
 pub fn set_ccompare1(val: u32) {
     unsafe {
@@ -37,6 +40,7 @@ pub fn set_ccompare1(val: u32) {
         " :: "r"(val):::: "volatile" )
     };
 }
+#[cfg(feature = "extra_ccompare")]
 #[inline]
 pub fn set_ccompare2(val: u32) {
     unsafe {
