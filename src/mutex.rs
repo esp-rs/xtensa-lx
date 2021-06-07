@@ -6,6 +6,7 @@ pub extern crate mutex_trait;
 pub use mutex_trait::Mutex;
 
 /// A spinlock and critical section section based mutex.
+#[derive(Default)]
 pub struct CriticalSectionSpinLockMutex<T> {
     data: spin::Mutex<T>,
 }
@@ -39,6 +40,7 @@ unsafe impl<T> Sync for CriticalSectionSpinLockMutex<T> where T: Send {}
 /// **This Mutex is only safe on single-core applications.**
 ///
 /// A `CriticalSection` **is not sufficient** to ensure exclusive access across cores.
+#[derive(Default)]
 pub struct CriticalSectionMutex<T> {
     data: UnsafeCell<T>,
 }
@@ -66,6 +68,7 @@ impl<T> mutex_trait::Mutex for &'_ CriticalSectionMutex<T> {
 unsafe impl<T> Sync for CriticalSectionMutex<T> where T: Send {}
 
 /// A spinlock based mutex.
+#[derive(Default)]
 pub struct SpinLockMutex<T> {
     data: spin::Mutex<T>,
 }
