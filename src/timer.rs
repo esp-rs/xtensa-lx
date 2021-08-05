@@ -4,21 +4,21 @@
 #[inline]
 pub fn get_ccompare0() -> u32 {
     let x: u32;
-    unsafe { llvm_asm!("rsr.ccompare0 $0" : "=r"(x) ::: "volatile" ) };
+    unsafe { asm!("rsr.ccompare0 {0}", out(reg) x, options(nostack)) };
     x
 }
 #[cfg(feature = "ccompare1")]
 #[inline]
 pub fn get_ccompare1() -> u32 {
     let x: u32;
-    unsafe { llvm_asm!("rsr.ccompare1 $0" : "=r"(x) ::: "volatile" ) };
+    unsafe { asm!("rsr.ccompare1 {0}", out(reg) x, options(nostack)) };
     x
 }
 #[cfg(feature = "ccompare2")]
 #[inline]
 pub fn get_ccompare2() -> u32 {
     let x: u32;
-    unsafe { llvm_asm!("rsr.ccompare2 $0" : "=r"(x) ::: "volatile" ) };
+    unsafe { asm!("rsr.ccompare2 {0}", out(reg) x, options(nostack)) };
     x
 }
 
@@ -26,7 +26,7 @@ pub fn get_ccompare2() -> u32 {
 #[inline]
 pub fn get_ccompare3() -> u32 {
     let x: u32;
-    unsafe { llvm_asm!("rsr.ccompare3 $0" : "=r"(x) ::: "volatile" ) };
+    unsafe { asm!("rsr.ccompare3 {0}", out(reg) x, options(nostack)) };
     x
 }
 
@@ -34,40 +34,40 @@ pub fn get_ccompare3() -> u32 {
 #[inline]
 pub fn set_ccompare0(val: u32) {
     unsafe {
-        llvm_asm!("
-        wsr.ccompare0 $0
+        asm!("
+        wsr.ccompare0 {0}
         isync
-        " :: "r"(val):::: "volatile" )
+        ", in(reg) val, options(nostack))
     };
 }
 #[cfg(feature = "ccompare1")]
 #[inline]
 pub fn set_ccompare1(val: u32) {
     unsafe {
-        llvm_asm!("
-        wsr.ccompare1 $0
+        asm!("
+        wsr.ccompare1 {0}
         isync
-        " :: "r"(val):::: "volatile" )
+        ", in(reg) val, options(nostack))
     };
 }
 #[cfg(feature = "ccompare2")]
 #[inline]
 pub fn set_ccompare2(val: u32) {
     unsafe {
-        llvm_asm!("
-        wsr.ccompare2 $0
+        asm!("
+        wsr.ccompare2 {0}
         isync
-        " :: "r"(val):::: "volatile" )
+        ", in(reg) val, options(nostack))
     };
 }
 #[cfg(feature = "ccompare3")]
 #[inline]
 pub fn set_ccompare3(val: u32) {
     unsafe {
-        llvm_asm!("
-        wsr.ccompare3 $0
+        asm!("
+        wsr.ccompare3 {0}
         isync
-        " :: "r"(val):::: "volatile" )
+        ", in(reg) val, options(nostack))
     };
 }
 
@@ -76,7 +76,7 @@ pub fn set_ccompare3(val: u32) {
 #[inline]
 pub fn get_cycle_count() -> u32 {
     let x: u32;
-    unsafe { llvm_asm!("rsr.ccount $0" : "=r"(x) ::: "volatile" ) };
+    unsafe { asm!("rsr.ccount {0}", out(reg) x, options(nostack)) };
     x
 }
 
