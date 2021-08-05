@@ -14,7 +14,7 @@ links = "xtensa-lx" # prevent multiple versions of this crate to be linked toget
 [dependencies]
 r0 = "1.0.0"
 bare-metal = { version = "0.2.0", features = ["const-fn"] }
-spin = "0.5.2"
+spin = "0.9"
 mutex-trait = "0.2"
 
 [features]

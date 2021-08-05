@@ -1,5 +1,5 @@
 #![no_std]
-#![feature(llvm_asm)]
+#![feature(asm)]
 
 pub mod interrupt;
 pub mod mutex;
@@ -11,14 +11,14 @@ mod macros;
 /// Move the vector base
 #[inline]
 pub unsafe fn set_vecbase(base: *const u32) {
-    llvm_asm!("wsr.vecbase $0" ::"r"(base) :: "volatile");
+    asm!("wsr.vecbase {0}", in(reg) base, options(nostack));
 }
 
 /// Get the core stack pointer
 #[inline(always)]
 pub fn get_stack_pointer() -> *const u32 {
     let x: *const u32;
-    unsafe { llvm_asm!("mov $0,sp" : "=r"(x) ::: "volatile") };
+    unsafe { asm!("mov {0}, sp", out(reg) x, options(nostack)) };
     x
 }
 
@@ -30,10 +30,12 @@ pub fn get_stack_pointer() -> *const u32 {
 /// `stack` pointer to the non-inclusive end of the stack (must be 16-byte aligned)
 #[inline(always)]
 pub unsafe fn set_stack_pointer(stack: *mut u32) {
-    llvm_asm!("
-        movi a0,0
-        mov sp,$0
-        " :: "r"(stack):"a0" ::: "volatile" );
+    asm!("
+    movi a0, 0
+    mov sp, {0}
+    ",
+        in(reg) stack, out("a0") _, options(nostack)
+    );
 }
 
 /// Get the core current program counter
@@ -42,14 +44,14 @@ pub fn get_program_counter() -> *const u32 {
     let x: *const u32;
     let _y: u32;
     unsafe {
-        llvm_asm!("
-            mov $1,a0
+        asm!("
+            mov {1}, a0
             call0 1f
             .align 4
             1: 
-            mov $0,a0
-            mov a0,$1
-            " : "=r"(x),"=r"(_y)::"a0" : "volatile" )
+            mov {0}, a0
+            mov a0, {1}
+            ", out(reg) x, out(reg) _y, out("a0") _, options(nostack))
     };
     x
 }
@@ -58,7 +60,7 @@ pub fn get_program_counter() -> *const u32 {
 #[inline]
 pub fn get_processor_id() -> u32 {
     let mut x: u32;
-    unsafe { llvm_asm!("rsr.prid $0" : "=r"(x) ::: "volatile") };
+    unsafe { asm!("rsr.prid {0}", out(reg) x, options(nostack)) };
     x
 }
 
@@ -69,12 +71,12 @@ const DCR_ENABLEOCD: u32 = 0x01;
 #[inline]
 pub fn is_debugger_attached() -> bool {
     let mut x: u32;
-    unsafe { llvm_asm!("rer $0,$1" : "=r"(x): "r"(XDM_OCD_DCR_SET) :: "volatile" ) };
+    unsafe { asm!("rer {0}, {1}", out(reg) x, in(reg) XDM_OCD_DCR_SET, options(nostack)) };
     (x & DCR_ENABLEOCD) != 0
 }
 
 /// Insert debug breakpoint
 #[inline(always)]
 pub fn debug_break() {
-    unsafe { llvm_asm!("break 1,15"::::"volatile") };
+    unsafe { asm!("break 1, 15", options(nostack)) };
 }
