@@ -19,6 +19,7 @@ mutex-trait = "0.2"
 
 [features]
 lx6 = ["ccompare0", "ccompare1", "ccompare2", "ccount"]
+lx7 = ["ccompare0", "ccompare1", "ccompare2", "ccount"]
 lx106 = ["ccompare0", "ccount"]
 
 # CPU configurations, taken from: https://github.com/espressif/xtensa-overlays

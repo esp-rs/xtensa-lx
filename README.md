@@ -5,6 +5,7 @@ Low level access to xtensa lx processors. This crate currently supports the foll
 | Feature        | Description                                    |
 |----------------|------------------------------------------------|
 |   `lx6`        | The processors are used in the ESP32 SoC's.    |
+|   `lx7`        | The processors are used in the ESP32-SX SoC's. |
 |   `lx106`      | The processors are used in the ESP8266 SoC's.  |
 
 ## License
