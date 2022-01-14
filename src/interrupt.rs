@@ -1,5 +1,7 @@
 //! Interrupts
 
+use core::arch::asm;
+
 pub use bare_metal::CriticalSection;
 
 /// Trait for enums of external interrupt numbers.

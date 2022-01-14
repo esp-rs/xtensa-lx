@@ -1,7 +1,7 @@
 [package]
 name = "xtensa-lx"
 version = "0.4.0"
-description = "Low level access for xtensa lx processors and peripherals"
+description = "Low level access for Xtensa LX processors and peripherals"
 categories = ["embedded", "hardware-support", "no-std"]
 keywords = ["xtensa", "lx", "register", "peripheral"]
 license = "MIT OR Apache-2.0"
@@ -9,17 +9,19 @@ readme = "README.md"
 repository = "https://github.com/esp-rs/xtensa-lx"
 authors = ["Scott Mabin <scott@mabez.dev>", "Arjan Mels <arjan@mels.email>"]
 edition = "2018"
-links = "xtensa-lx" # prevent multiple versions of this crate to be linked together
+
+# Prevent multiple versions of this crate to be linked together
+links = "xtensa-lx"
 
 [dependencies]
-r0 = "1.0.0"
 bare-metal = "1.0"
-spin = "0.9"
 mutex-trait = "0.2"
+r0 = "1.0"
+spin = "0.9"
 
 [features]
-lx6 = ["ccompare0", "ccompare1", "ccompare2", "ccount"]
-lx106 = ["ccompare0", "ccount"]
+esp32   = ["ccompare0", "ccompare1", "ccompare2", "ccount"]
+esp8266 = ["ccompare0", "ccount"]
 
 # CPU configurations, taken from: https://github.com/espressif/xtensa-overlays
 
