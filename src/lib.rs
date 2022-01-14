@@ -1,5 +1,9 @@
 #![no_std]
+#![allow(asm_sub_register)]
 #![feature(asm)]
+#![feature(asm_experimental_arch)]
+
+use core::arch::asm;
 
 pub mod interrupt;
 pub mod mutex;
