@@ -1,5 +1,7 @@
 //! Xtensa internal timers
 
+use core::arch::asm;
+
 #[cfg(feature = "ccompare0")]
 #[inline]
 pub fn get_ccompare0() -> u32 {
