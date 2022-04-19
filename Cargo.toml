@@ -17,10 +17,12 @@ links = "xtensa-lx"
 bare-metal = "1.0"
 mutex-trait = "0.2"
 r0 = "1.0"
-spin = "0.9"
+spin = { version = "0.9", optional = true }
 
 [features]
-esp32   = ["ccompare0", "ccompare1", "ccompare2", "ccount"]
+esp32   = ["ccompare0", "ccompare1", "ccompare2", "ccount", "spin"]
+esp32s2 = ["ccompare0", "ccompare1", "ccompare2", "ccount"]
+esp32s3 = ["ccompare0", "ccompare1", "ccompare2", "ccount", "spin"]
 esp8266 = ["ccompare0", "ccount"]
 
 # CPU configurations, taken from: https://github.com/espressif/xtensa-overlays
