@@ -7,10 +7,12 @@
 
 Low level access to Xtensa LX processors. This crate currently supports the following CPUs:
 
-| Feature   | Supported CPUs                                       |
-| --------- | ---------------------------------------------------- |
-| `esp32`   | ESP32 (_LX6_), ESP32-S2 (_LX7_) and ESP32-S3 (_LX7_) |
-| `esp8266` | ESP8266 (_LX106_)                                    |
+| Feature   | Supported CPUs    |
+| --------- | ----------------- |
+| `esp32`   | ESP32 (_LX6_)     |
+| `esp32s2` | ESP32-S2 (_LX7_)  |
+| `esp32s3` | ESP32-S3 (_LX7_)  |
+| `esp8266` | ESP8266 (_LX106_) |
 
 ## [Documentation](https://docs.rs/crate/xtensa-lx)
 

@@ -2,15 +2,16 @@
 
 use core::cell::UnsafeCell;
 
-pub extern crate mutex_trait;
-pub use mutex_trait::Mutex;
+pub use mutex_trait::{self, Mutex};
 
 /// A spinlock and critical section section based mutex.
+#[cfg(not(any(feature = "esp32s2", feature = "esp8266")))]
 #[derive(Default)]
 pub struct CriticalSectionSpinLockMutex<T> {
     data: spin::Mutex<T>,
 }
 
+#[cfg(not(any(feature = "esp32s2", feature = "esp8266")))]
 impl<T> CriticalSectionSpinLockMutex<T> {
     /// Create a new mutex
     pub const fn new(data: T) -> Self {
@@ -20,6 +21,7 @@ impl<T> CriticalSectionSpinLockMutex<T> {
     }
 }
 
+#[cfg(not(any(feature = "esp32s2", feature = "esp8266")))]
 impl<T> mutex_trait::Mutex for &'_ CriticalSectionSpinLockMutex<T> {
     type Data = T;
 
@@ -31,6 +33,7 @@ impl<T> mutex_trait::Mutex for &'_ CriticalSectionSpinLockMutex<T> {
 // NOTE A `Mutex` can be used as a channel so the protected data must be `Send`
 // to prevent sending non-Sendable stuff (e.g. access tokens) across different
 // execution contexts (e.g. interrupts)
+#[cfg(not(any(feature = "esp32s2", feature = "esp8266")))]
 unsafe impl<T> Sync for CriticalSectionSpinLockMutex<T> where T: Send {}
 
 /// A Mutex based on critical sections
@@ -68,11 +71,13 @@ impl<T> mutex_trait::Mutex for &'_ CriticalSectionMutex<T> {
 unsafe impl<T> Sync for CriticalSectionMutex<T> where T: Send {}
 
 /// A spinlock based mutex.
+#[cfg(not(any(feature = "esp32s2", feature = "esp8266")))]
 #[derive(Default)]
 pub struct SpinLockMutex<T> {
     data: spin::Mutex<T>,
 }
 
+#[cfg(not(any(feature = "esp32s2", feature = "esp8266")))]
 impl<T> SpinLockMutex<T> {
     /// Create a new mutex
     pub const fn new(data: T) -> Self {
@@ -82,6 +87,7 @@ impl<T> SpinLockMutex<T> {
     }
 }
 
+#[cfg(not(any(feature = "esp32s2", feature = "esp8266")))]
 impl<T> mutex_trait::Mutex for &'_ SpinLockMutex<T> {
     type Data = T;
 
@@ -93,4 +99,5 @@ impl<T> mutex_trait::Mutex for &'_ SpinLockMutex<T> {
 // NOTE A `Mutex` can be used as a channel so the protected data must be `Send`
 // to prevent sending non-Sendable stuff (e.g. access tokens) across different
 // execution contexts (e.g. interrupts)
+#[cfg(not(any(feature = "esp32s2", feature = "esp8266")))]
 unsafe impl<T> Sync for SpinLockMutex<T> where T: Send {}
