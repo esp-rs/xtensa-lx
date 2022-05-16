@@ -13,6 +13,9 @@ edition = "2018"
 # Prevent multiple versions of this crate to be linked together
 links = "xtensa-lx"
 
+[package.metadata.docs.rs]
+features = ["esp32"]
+
 [dependencies]
 bare-metal = "1.0"
 mutex-trait = "0.2"
