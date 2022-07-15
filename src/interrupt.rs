@@ -117,7 +117,7 @@ pub fn get() -> u32 {
 /// Only valid for software interrupts
 #[inline]
 pub unsafe fn set(mask: u32) {
-    asm!("wsr.interrupt {0}", in(reg) mask, options(nostack));
+    asm!("wsr.intset {0}", in(reg) mask, options(nostack));
 }
 
 /// Clear interrupt
