@@ -117,7 +117,12 @@ pub fn get() -> u32 {
 /// Only valid for software interrupts
 #[inline]
 pub unsafe fn set(mask: u32) {
-    asm!("wsr.interrupt {0}", in(reg) mask, options(nostack));
+    asm!("
+         wsr.intset {0}
+         rsync
+         ",
+         in(reg) mask, options(nostack)
+    );
 }
 
 /// Clear interrupt
@@ -125,7 +130,12 @@ pub unsafe fn set(mask: u32) {
 /// Only valid for software and edge-triggered interrupts
 #[inline]
 pub unsafe fn clear(mask: u32) {
-    asm!("wsr.intclear {0}", in(reg) mask, options(nostack));
+    asm!("
+         wsr.intclear {0}
+         rsync
+         ",
+         in(reg) mask, options(nostack)
+    );
 }
 
 /// Get current interrupt level
