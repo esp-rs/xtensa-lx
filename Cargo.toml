@@ -17,10 +17,9 @@ links = "xtensa-lx"
 features = ["esp32"]
 
 [dependencies]
-bare-metal = "1.0"
-mutex-trait = "0.2"
-r0 = "1.0"
-spin = { version = "0.9", optional = true }
+bare-metal = "1.0.0"
+mutex-trait = "0.2.0"
+spin = { version = "0.9.4", optional = true }
 
 [features]
 esp32   = ["ccompare0", "ccompare1", "ccompare2", "ccount", "spin"]
