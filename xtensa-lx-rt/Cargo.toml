@@ -1,0 +1,34 @@
+[package]
+name = "xtensa-lx-rt"
+version = "0.16.0"
+authors = [
+    "Scott Mabin <scott@mabez.dev>", 
+    "Arjan Mels <arjan@mels.email>",
+    "Robin Appelman <robin@icewind.nl>",
+]
+edition = "2021"
+rust-version = "1.65"
+description = "Low level access for Xtensa LX processors"
+readme = "README.md"
+repository = "https://github.com/esp-rs/xtensa-lx-rt"
+license = "MIT OR Apache-2.0"
+keywords = ["xtensa", "lx", "register", "peripheral"]
+categories = ["embedded", "hardware-support", "no-std"]
+
+[package.metadata.docs.rs]
+features = ["esp32"]
+
+[dependencies]
+bare-metal = "1.0.0"
+r0 = "1.0.0"
+xtensa-lx-rt-proc-macros = { path = "procmacros", version = "=0.2.1" }
+
+[build-dependencies]
+core-isa-parser = { path = "../core-isa-parser", version = "=0.2.0" }
+minijinja = "1.0.7"
+
+[features]
+esp32   = []
+esp32s2 = []
+esp32s3 = []
+esp8266 = []

@@ -1,30 +1,15 @@
-# `xtensa-lx`
+# xtensa-lx crates
 
-[![Crates.io](https://img.shields.io/crates/v/xtensa-lx?labelColor=1C2C2E&color=C96329&logo=Rust&style=flat-square)](https://crates.io/crates/xtensa-lx)
-[![docs.rs](https://img.shields.io/docsrs/xtensa-lx?labelColor=1C2C2E&color=C96329&logo=rust&style=flat-square)](https://docs.rs/xtensa-lx)
-![Crates.io](https://img.shields.io/crates/l/xtensa-lx?labelColor=1C2C2E&style=flat-square)
-[![Matrix](https://img.shields.io/matrix/esp-rs:matrix.org?label=join%20matrix&labelColor=1C2C2E&color=BEC5C9&logo=matrix&style=flat-square)](https://matrix.to/#/#esp-rs:matrix.org)
+This repository contains various crates useful for writing Rust programs
+on xtensa-lx microcontrollers:
 
-Low level access to Xtensa LX processors. This crate currently supports the following CPUs:
+* [`xtensa-lx`]: CPU peripheral access and intrinsics.
+* [`xtensa-lx-rt`]: Startup code and interrupt handling.
+* [`core-isa-parser`]: A parser for XCHAL ISA configuration files.
 
-| Feature   | Supported CPUs    |
-| --------- | ----------------- |
-| `esp32`   | ESP32 (_LX6_)     |
-| `esp32s2` | ESP32-S2 (_LX7_)  |
-| `esp32s3` | ESP32-S3 (_LX7_)  |
-| `esp8266` | ESP8266 (_LX106_) |
-
-## [Documentation](https://docs.rs/crate/xtensa-lx)
-
-## License
-
-Licensed under either of
-
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
-  http://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
-
-at your option.
+[`xtensa-lx`]: https://crates.io/crates/xtensa-lx
+[`xtensa-lx-rt`]: https://crates.io/crates/xtensa-lx-rt
+[`core-isa-parser`]: https://crates.io/crates/core-isa-parser
 
 ### Contribution
 
