@@ -25,7 +25,6 @@ spin = { version = "0.9.4", optional = true }
 esp32   = ["ccompare0", "ccompare1", "ccompare2", "ccount", "spin"]
 esp32s2 = ["ccompare0", "ccompare1", "ccompare2", "ccount"]
 esp32s3 = ["ccompare0", "ccompare1", "ccompare2", "ccount", "spin"]
-esp8266 = ["ccompare0", "ccount"]
 
 # CPU configurations, taken from: https://github.com/espressif/xtensa-overlays
 
