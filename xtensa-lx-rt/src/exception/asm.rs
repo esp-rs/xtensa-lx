@@ -166,7 +166,7 @@ unsafe extern "C" fn save_context() {
         rsr     a3, m3
         s32i    a3, sp, +XT_STK_M3
         ",
-        #[cfg(XCHAL_HAVE_DFP_ACCEL)]
+        #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_DFP_ACCEL))]
         "
         // Double Precision Accelerator Option
         rur     a3, f64r_lo 
@@ -176,7 +176,7 @@ unsafe extern "C" fn save_context() {
         rur     a3, f64s   
         s32i    a3, sp, +XT_STK_F64S
         ",
-        #[cfg(XCHAL_HAVE_FP)]
+        #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
         "
         // Coprocessor Option
         rur     a3, fcr
@@ -385,7 +385,7 @@ unsafe extern "C" fn restore_context() {
         l32i    a3, sp, +XT_STK_M3
         wsr     a3, m3
         ",
-        #[cfg(XCHAL_HAVE_DFP_ACCEL)]
+        #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_DFP_ACCEL))]
         "
         // Double Precision Accelerator Option
         l32i    a3, sp, +XT_STK_F64R_LO
@@ -395,7 +395,7 @@ unsafe extern "C" fn restore_context() {
         l32i    a3, sp, +XT_STK_F64S
         wur     a3, f64s
         ",
-        #[cfg(XCHAL_HAVE_FP)]
+        #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
         "
         // Coprocessor Option
         l32i    a3, sp, +XT_STK_FCR
