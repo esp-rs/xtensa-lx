@@ -43,26 +43,47 @@ pub struct Context {
     pub M1: u32,
     pub M2: u32,
     pub M3: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_DFP_ACCEL))]
     pub F64R_LO: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_DFP_ACCEL))]
     pub F64R_HI: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_DFP_ACCEL))]
     pub F64S: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub FCR: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub FSR: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F0: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F1: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F2: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F3: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F4: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F5: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F6: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F7: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F8: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F9: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F10: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F11: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F12: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F13: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F14: u32,
+    #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
     pub F15: u32,
 }
 

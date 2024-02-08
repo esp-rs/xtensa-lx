@@ -122,6 +122,13 @@ unsafe extern "C" fn save_context() {
         rsr     a3,  SAR
         s32i    a3,  sp, +XT_STK_SAR
         ",
+        #[cfg(all(XCHAL_HAVE_CP, not(feature = "float-save-restore")))]
+        "
+        /* Disable coprocessor, any use of floats in ISRs will cause an exception unless float-save-restore feature is enabled */
+        movi    a3,  0
+        wsr     a3,  CPENABLE
+        rsync
+        ",
         #[cfg(XCHAL_HAVE_LOOPS)]
         "
         // Loop Option
@@ -166,7 +173,7 @@ unsafe extern "C" fn save_context() {
         rsr     a3, m3
         s32i    a3, sp, +XT_STK_M3
         ",
-        #[cfg(XCHAL_HAVE_DFP_ACCEL)]
+        #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_DFP_ACCEL))]
         "
         // Double Precision Accelerator Option
         rur     a3, f64r_lo 
@@ -176,7 +183,7 @@ unsafe extern "C" fn save_context() {
         rur     a3, f64s   
         s32i    a3, sp, +XT_STK_F64S
         ",
-        #[cfg(XCHAL_HAVE_FP)]
+        #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
         "
         // Coprocessor Option
         rur     a3, fcr
@@ -385,7 +392,7 @@ unsafe extern "C" fn restore_context() {
         l32i    a3, sp, +XT_STK_M3
         wsr     a3, m3
         ",
-        #[cfg(XCHAL_HAVE_DFP_ACCEL)]
+        #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_DFP_ACCEL))]
         "
         // Double Precision Accelerator Option
         l32i    a3, sp, +XT_STK_F64R_LO
@@ -395,7 +402,7 @@ unsafe extern "C" fn restore_context() {
         l32i    a3, sp, +XT_STK_F64S
         wur     a3, f64s
         ",
-        #[cfg(XCHAL_HAVE_FP)]
+        #[cfg(all(feature = "float-save-restore", XCHAL_HAVE_FP))]
         "
         // Coprocessor Option
         l32i    a3, sp, +XT_STK_FCR
@@ -418,6 +425,13 @@ unsafe extern "C" fn restore_context() {
         lsi     f13, sp, +XT_STK_F13
         lsi     f14, sp, +XT_STK_F14
         lsi     f15, sp, +XT_STK_F15
+        ",
+        #[cfg(all(XCHAL_HAVE_CP, not(feature = "float-save-restore")))]
+        "
+        /* Re-enable coprocessor(s) after ISR */
+        movi    a3,  8 /* XCHAL_CP_MAXCFG */
+        wsr     a3,  CPENABLE
+        rsync
         ",
         "
         // general registers
