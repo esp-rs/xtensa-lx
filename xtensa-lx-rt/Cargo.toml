@@ -31,3 +31,5 @@ minijinja = "1.0.7"
 esp32   = []
 esp32s2 = []
 esp32s3 = []
+
+float-save-restore = []

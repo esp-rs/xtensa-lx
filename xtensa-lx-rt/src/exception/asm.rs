@@ -122,6 +122,13 @@ unsafe extern "C" fn save_context() {
         rsr     a3,  SAR
         s32i    a3,  sp, +XT_STK_SAR
         ",
+        #[cfg(all(XCHAL_HAVE_CP, not(feature = "float-save-restore")))]
+        "
+        /* Disable coprocessor, any use of floats in ISRs will cause an exception unless float-save-restore feature is enabled */
+        movi    a3,  0
+        wsr     a3,  CPENABLE
+        rsync
+        ",
         #[cfg(XCHAL_HAVE_LOOPS)]
         "
         // Loop Option
@@ -418,6 +425,13 @@ unsafe extern "C" fn restore_context() {
         lsi     f13, sp, +XT_STK_F13
         lsi     f14, sp, +XT_STK_F14
         lsi     f15, sp, +XT_STK_F15
+        ",
+        #[cfg(all(XCHAL_HAVE_CP, not(feature = "float-save-restore")))]
+        "
+        /* Re-enable coprocessor(s) after ISR */
+        movi    a3,  8 /* XCHAL_CP_MAXCFG */
+        wsr     a3,  CPENABLE
+        rsync
         ",
         "
         // general registers
