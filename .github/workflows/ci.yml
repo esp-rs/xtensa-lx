@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  pull_request:
+    paths-ignore:
+      - "**/README.md"
+  push:
+    paths-ignore:
+      - "**/README.md"
+  merge_group:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# Cancel any currently running workflows from the same PR, branch, or
+# tag when a new workflow is triggered.
+#
+# https://stackoverflow.com/a/66336834
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+
+jobs:
+  # --------------------------------------------------------------------------
+  # Check Packages
+
+  xtensa-lx:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: esp-rs/xtensa-toolchain@v1.5
+        with:
+          default: true
+          ldproxy: false
+      - uses: Swatinem/rust-cache@v2
+
+      # Build the 'xtensa-lx' package:
+      - name: check (no features)
+        run: cd xtensa-lx/ && cargo build
+      - name: check (all features)
+        run: cd xtensa-lx/ && cargo build --features=float-save-restore,spin
+
+  # xtensa-lx-rt:
+  #   runs-on: ubuntu-latest
+  #
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       chip: ["esp32", "esp32s2", "esp32s3"]
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: esp-rs/xtensa-toolchain@v1.5
+  #       with:
+  #         default: true
+  #         ldproxy: false
+  #     - uses: Swatinem/rust-cache@v2
+  #
+  #     # Build the 'xtensa-lx-rt' package:
+  #     - name: check (${{ matrix.chip }}, no features)
+  #       run: cd xtensa-lx-rt/ && cargo build --features=${{ matrix.chip }}
+  #     - name: check (${{ matrix.chip }}, all features)
+  #       run: cd xtensa-lx-rt/ && cargo build --features=${{ matrix.chip }},float-save-restore
+
+  # --------------------------------------------------------------------------
+  # Lint
+
+  rustfmt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      # Some of the configuration items in 'rustfmt.toml' require the 'nightly'
+      # release channel:
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: nightly
+          components: rustfmt
+      - uses: Swatinem/rust-cache@v2
+
+      # Check the formatting of all packages:
+      - name: rustfmt (xtensa-lx)
+        run: cargo fmt --all --manifest-path=xtensa-lx/Cargo.toml -- --check
+      - name: rustfmt (xtensa-lx-rt)
+        run: cargo fmt --all --manifest-path=xtensa-lx-rt/Cargo.toml -- --check
