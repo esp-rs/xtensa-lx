@@ -1,9 +1,10 @@
 /// Macro to create a mutable reference to a statically allocated value
 ///
-/// This macro returns a value with type `Option<&'static mut $ty>`. `Some($expr)` will be returned
-/// the first time the macro is executed; further calls will return `None`. To avoid `unwrap`ping a
-/// `None` variant the caller must ensure that the macro is called from a function that's executed
-/// at most once in the whole lifetime of the program.
+/// This macro returns a value with type `Option<&'static mut $ty>`.
+/// `Some($expr)` will be returned the first time the macro is executed; further
+/// calls will return `None`. To avoid `unwrap`ping a `None` variant the caller
+/// must ensure that the macro is called from a function that's executed at most
+/// once in the whole lifetime of the program.
 ///
 /// # Example
 ///

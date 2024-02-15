@@ -28,19 +28,24 @@ pub fn get_stack_pointer() -> *const u32 {
 /// Set the core stack pointer
 ///
 /// *This is highly unsafe!*
-/// It should be used with care at e.g. program start or when building a task scheduler
+/// It should be used with care at e.g. program start or when building a task
+/// scheduler
 ///
-/// `stack` pointer to the non-inclusive end of the stack (must be 16-byte aligned)
+/// `stack` pointer to the non-inclusive end of the stack (must be 16-byte
+/// aligned)
 #[inline(always)]
 pub unsafe fn set_stack_pointer(stack: *mut u32) {
-    // FIXME: this function relies on it getting inlined - if it doesn't inline it will try and return from this function using the adress in `a0` which has just been trashed...
-    // According to https://nnethercote.github.io/perf-book/inlining.html:
-    // "Inline attributes do not guarantee that a function is inlined or not inlined, but in practice, #[inline(always)] will cause inlining in all but the most exceptional cases."
-    // Is this good enough? Should we rewrite these as a macro to guarentee inlining?
-    
-    
-    // NOTE: modification of the `sp` & `a0` is not typically allowed inside inline asm!,
-    // but because we *need* to modify it we can do so by ommiting it from the clobber
+    // FIXME: this function relies on it getting inlined - if it doesn't inline it
+    // will try and return from this function using the adress in `a0` which has
+    // just been trashed... According to https://nnethercote.github.io/perf-book/inlining.html:
+    // "Inline attributes do not guarantee that a function is inlined or not
+    // inlined, but in practice, #[inline(always)] will cause inlining in all but
+    // the most exceptional cases." Is this good enough? Should we rewrite these
+    // as a macro to guarentee inlining?
+
+    // NOTE: modification of the `sp` & `a0` is not typically allowed inside inline
+    // asm!, but because we *need* to modify it we can do so by ommiting it from
+    // the clobber
     asm!(
         "movi a0, 0", // trash return register
         "mov sp, {0}", // move stack pointer

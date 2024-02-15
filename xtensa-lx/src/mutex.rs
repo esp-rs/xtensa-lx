@@ -42,7 +42,8 @@ unsafe impl<T> Sync for CriticalSectionSpinLockMutex<T> where T: Send {}
 ///
 /// **This Mutex is only safe on single-core applications.**
 ///
-/// A `CriticalSection` **is not sufficient** to ensure exclusive access across cores.
+/// A `CriticalSection` **is not sufficient** to ensure exclusive access across
+/// cores.
 #[derive(Default)]
 pub struct CriticalSectionMutex<T> {
     data: UnsafeCell<T>,

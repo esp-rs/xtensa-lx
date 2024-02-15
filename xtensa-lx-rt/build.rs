@@ -1,8 +1,10 @@
-use std::collections::{HashMap, HashSet};
-use std::env;
-use std::fs::File;
-use std::io::Write;
-use std::path::PathBuf;
+use std::{
+    collections::{HashMap, HashSet},
+    env,
+    fs::File,
+    io::Write,
+    path::PathBuf,
+};
 
 use core_isa_parser::{get_config, Chip, Value};
 use minijinja::{context, Environment};
@@ -35,7 +37,8 @@ fn handle_esp32() {
 
     let mut features_to_disable: HashSet<String> = HashSet::new();
 
-    // Users can pass -Ctarget-feature to the compiler multiple times, so we have to handle that
+    // Users can pass -Ctarget-feature to the compiler multiple times, so we have to
+    // handle that
     let target_flags = rustflags
         .split(0x1f as char)
         .filter(|s| s.starts_with("target-feature="))

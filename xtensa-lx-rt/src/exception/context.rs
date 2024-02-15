@@ -92,7 +92,8 @@ extern "Rust" {
     fn __exception(cause: ExceptionCause, save_frame: &mut Context);
     /// This symbol will be provided by the user via `#[exception]`
     fn __user_exception(cause: ExceptionCause, save_frame: &mut Context);
-    /// No attribute is supplied for this symbol as the double exception can hardly occur
+    /// No attribute is supplied for this symbol as the double exception can
+    /// hardly occur
     fn __double_exception(cause: ExceptionCause, save_frame: &mut Context);
 
     /// This symbol will be provided by the user via `#[interrupt(1)]`
@@ -139,10 +140,11 @@ extern "C" fn __default_double_exception(cause: ExceptionCause, save_frame: &Con
 //
 // The interrupt handlers all use special return instructions.
 // rust still generates a ret.w instruction, which will never be reached.
-// generation of the ret.w can be prevented by using core::intrinsics::unreachable,
-// but then a break 15,1 will be generated (which takes 3 bytes instead of 2) or a 'loop {}',
-// but then a jump to own address will be generated which is also 3 bytes.
-// No way found yet to prevent this generation altogether.
+// generation of the ret.w can be prevented by using
+// core::intrinsics::unreachable, but then a break 15,1 will be generated (which
+// takes 3 bytes instead of 2) or a 'loop {}', but then a jump to own address
+// will be generated which is also 3 bytes. No way found yet to prevent this
+// generation altogether.
 
 #[naked]
 #[no_mangle]

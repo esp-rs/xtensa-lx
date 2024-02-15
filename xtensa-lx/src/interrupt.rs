@@ -142,7 +142,9 @@ pub unsafe fn clear(mask: u32) {
 #[inline]
 pub fn get_level() -> u32 {
     let ps: u32;
-    unsafe { asm!("rsr.ps {0}", out(reg) ps, options(nostack)); };
+    unsafe {
+        asm!("rsr.ps {0}", out(reg) ps, options(nostack));
+    };
     ps & 0xf
 }
 
