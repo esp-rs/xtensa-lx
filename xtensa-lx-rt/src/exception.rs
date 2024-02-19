@@ -1,38 +1,37 @@
 //! Exception handling
 //!
-//! Currently specialized for ESP32 (LX6) configuration: which extra registers to store,
-//! how many interrupt levels etc.
+//! Currently specialized for ESP32 (LX6) configuration: which extra registers
+//! to store, how many interrupt levels etc.
 //!
-//! First level interrupts and exceptions save full processor state to the user stack.
-//! This includes the coprocessor registers contrary to the esp-idf where these are lazily saved.
-//! (Kernel mode option is currently not used.)
+//! First level interrupts and exceptions save full processor state to the user
+//! stack. This includes the coprocessor registers contrary to the esp-idf where
+//! these are lazily saved. (Kernel mode option is currently not used.)
 //!
 //! WindowUnder/Overflow and AllocA use default Xtensa implementation.
 //!
-//! LoadStoreError and Unaligned are not (yet) implemented: so all accesses to IRAM must
-//! be word sized and aligned.
+//! LoadStoreError and Unaligned are not (yet) implemented: so all accesses to
+//! IRAM must be word sized and aligned.
 //!
 //! Syscall 0 is not (yet) implemented: it doesn't seem to be used in rust.
 //!
-//! Double Exceptions can only occur during the early setup of the exception handler. Afterwards
-//! PS.EXCM is set to 0 to be able to handle WindowUnderflow/Overflow and recursive exceptions will
-//! happen instead.
+//! Double Exceptions can only occur during the early setup of the exception
+//! handler. Afterwards PS.EXCM is set to 0 to be able to handle
+//! WindowUnderflow/Overflow and recursive exceptions will happen instead.
 //!
-//! In various places call0 are used as long jump: `j.l` syntax is not supported and `call0`
-//! can always be expanded to `mov a0,label; call a0`. Care must be taken since A0 is overwritten.
-//!
+//! In various places call0 are used as long jump: `j.l` syntax is not supported
+//! and `call0` can always be expanded to `mov a0,label; call a0`. Care must be
+//! taken since A0 is overwritten.
 
 mod asm;
 mod context;
 
 pub use context::Context;
 
-
 /// EXCCAUSE register values
 ///
-/// General Exception Causes. (Values of EXCCAUSE special register set by general exceptions,
-/// which vector to the user, kernel, or double-exception vectors).
-///
+/// General Exception Causes. (Values of EXCCAUSE special register set by
+/// general exceptions, which vector to the user, kernel, or double-exception
+/// vectors).
 #[allow(unused)]
 #[derive(Debug)]
 #[repr(C)]
@@ -120,4 +119,3 @@ pub enum ExceptionCause {
 
     None = 255,
 }
-

@@ -58,8 +58,8 @@ pub unsafe extern "C" fn Reset() -> ! {
 
     // Copy of data segment is done by bootloader
 
-    // According to 4.4.6.2 of the xtensa isa, ccount and compare are undefined on reset,
-    // set all values to zero to disable
+    // According to 4.4.6.2 of the xtensa isa, ccount and compare are undefined on
+    // reset, set all values to zero to disable
     reset_internal_timers();
 
     // move vec table

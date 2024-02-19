@@ -80,8 +80,9 @@ pub fn entry(args: TokenStream, input: TokenStream) -> TokenStream {
         let ty = &statik.ty;
         let attrs = &statik.attrs;
 
-        // Note that we use an explicit `'static` lifetime for the entry point arguments. This makes
-        // it more flexible, and is sound here, since the entry will not be called again, ever.
+        // Note that we use an explicit `'static` lifetime for the entry point
+        // arguments. This makes it more flexible, and is sound here, since the
+        // entry will not be called again, ever.
         syn::parse::<FnArg>(
             quote!(#[allow(non_snake_case)] #(#attrs)* #ident: &'static mut #ty).into(),
         )
@@ -201,12 +202,13 @@ pub fn exception(args: TokenStream, input: TokenStream) -> TokenStream {
     .into()
 }
 
-/// Marks a function as the interrupt handler, with optional interrupt level indicated
+/// Marks a function as the interrupt handler, with optional interrupt level
+/// indicated
 ///
-/// When the function is also marked `#[naked]`, it is a low-level interrupt handler:
-/// no entry and exit code to store processor state will be generated.
-/// The user needs to ensure that all registers which are used are saved and restored and that
-/// the proper return instruction is used.
+/// When the function is also marked `#[naked]`, it is a low-level interrupt
+/// handler: no entry and exit code to store processor state will be generated.
+/// The user needs to ensure that all registers which are used are saved and
+/// restored and that the proper return instruction is used.
 #[proc_macro_attribute]
 pub fn interrupt(args: TokenStream, input: TokenStream) -> TokenStream {
     let mut f: ItemFn = syn::parse(input).expect("`#[interrupt]` must be applied to a function");
@@ -403,8 +405,8 @@ pub fn interrupt(args: TokenStream, input: TokenStream) -> TokenStream {
     }
 }
 
-/// Marks a function as the pre_init function. This function is called before main and *before
-/// the memory is initialized*.
+/// Marks a function as the pre_init function. This function is called before
+/// main and *before the memory is initialized*.
 #[proc_macro_attribute]
 pub fn pre_init(args: TokenStream, input: TokenStream) -> TokenStream {
     let f = parse_macro_input!(input as ItemFn);

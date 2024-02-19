@@ -1,12 +1,13 @@
-use crate::cfg_asm;
 use core::arch::{asm, global_asm};
+
+use crate::cfg_asm;
 
 // we could cfg symbols away and reduce frame size depending on features enabled
 // i.e the frame size is a fixed size based on all the features right now
 // we know at compile time if a target has loops for example, if it doesn't
 // we could cut that memory usage.
-// However in order to conveniently use `addmi` we need 256-byte alignment anyway
-// so wasting a bit more stack space seems to be the better option.
+// However in order to conveniently use `addmi` we need 256-byte alignment
+// anyway so wasting a bit more stack space seems to be the better option.
 // Additionally there is a chunk of memory reserved for spilled registers.
 global_asm!(
     "
@@ -481,8 +482,8 @@ global_asm!(
     "#
 );
 
-/// Handle Other Exceptions or Level 1 interrupt by storing full context and then
-/// calling regular function
+/// Handle Other Exceptions or Level 1 interrupt by storing full context and
+/// then calling regular function
 ///
 /// # Input:
 ///    * A0 stored in EXCSAVE1
@@ -524,8 +525,9 @@ unsafe extern "C" fn __default_naked_exception() {
     )
 }
 
-/// Handle Double Exceptions by storing full context and then calling regular function
-/// Double exceptions are not a normal occurrence. They indicate a bug of some kind.
+/// Handle Double Exceptions by storing full context and then calling regular
+/// function Double exceptions are not a normal occurrence. They indicate a bug
+/// of some kind.
 ///
 /// # Input:
 ///    * A0 stored in EXCSAVE1
@@ -602,7 +604,8 @@ global_asm!(
 "#
 );
 
-/// Handle Level 2 Interrupt by storing full context and then calling regular function
+/// Handle Level 2 Interrupt by storing full context and then calling regular
+/// function
 ///
 /// # Input:
 ///    * A0 stored in EXCSAVE2
@@ -613,7 +616,8 @@ unsafe extern "C" fn __default_naked_level_2_interrupt() {
     asm!("HANDLE_INTERRUPT_LEVEL 2", options(noreturn));
 }
 
-/// Handle Level 3 Interrupt by storing full context and then calling regular function
+/// Handle Level 3 Interrupt by storing full context and then calling regular
+/// function
 ///
 /// # Input:
 ///    * A0 stored in EXCSAVE3
@@ -624,7 +628,8 @@ unsafe extern "C" fn __default_naked_level_3_interrupt() {
     asm!("HANDLE_INTERRUPT_LEVEL 3", options(noreturn));
 }
 
-/// Handle Level 4 Interrupt by storing full context and then calling regular function
+/// Handle Level 4 Interrupt by storing full context and then calling regular
+/// function
 ///
 /// # Input:
 ///    * A0 stored in EXCSAVE4
@@ -635,7 +640,8 @@ unsafe extern "C" fn __default_naked_level_4_interrupt() {
     asm!("HANDLE_INTERRUPT_LEVEL 4", options(noreturn));
 }
 
-/// Handle Level 5 Interrupt by storing full context and then calling regular function
+/// Handle Level 5 Interrupt by storing full context and then calling regular
+/// function
 ///
 /// # Input:
 ///    * A0 stored in EXCSAVE5
@@ -646,7 +652,8 @@ unsafe extern "C" fn __default_naked_level_5_interrupt() {
     asm!("HANDLE_INTERRUPT_LEVEL 5", options(noreturn));
 }
 
-/// Handle Level 6 (=Debug) Interrupt by storing full context and then calling regular function
+/// Handle Level 6 (=Debug) Interrupt by storing full context and then calling
+/// regular function
 ///
 /// # Input:
 ///    * A0 stored in EXCSAVE6
@@ -657,7 +664,8 @@ unsafe extern "C" fn __default_naked_level_6_interrupt() {
     asm!("HANDLE_INTERRUPT_LEVEL 6", options(noreturn));
 }
 
-/// Handle Level 7 (=NMI) Interrupt by storing full context and then calling regular function
+/// Handle Level 7 (=NMI) Interrupt by storing full context and then calling
+/// regular function
 ///
 /// # Input:
 ///    * A0 stored in EXCSAVE7
