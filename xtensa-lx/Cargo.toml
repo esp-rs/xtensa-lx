@@ -1,6 +1,6 @@
 [package]
 name        = "xtensa-lx"
-version     = "0.8.0"
+version     = "0.9.0"
 edition     = "2021"
 description = "Low-level access for Xtensa LX processors and peripherals"
 repository  = "https://github.com/esp-rs/xtensa-lx"
@@ -20,5 +20,4 @@ mutex-trait = "0.2.0"
 spin        = { version = "0.9.8", optional = true }
 
 [features]
-float-save-restore = []
 spin               = ["dep:spin"]
