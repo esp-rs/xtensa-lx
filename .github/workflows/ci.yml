@@ -41,7 +41,7 @@ jobs:
       - name: check (no features)
         run: cd xtensa-lx/ && cargo build
       - name: check (all features)
-        run: cd xtensa-lx/ && cargo build --features=float-save-restore,spin
+        run: cd xtensa-lx/ && cargo build --features=spin
 
   # xtensa-lx-rt:
   #   runs-on: ubuntu-latest
