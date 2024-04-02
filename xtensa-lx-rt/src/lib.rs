@@ -1,13 +1,22 @@
-#![no_std]
+//! Minimal startup/runtime for Xtensa LX CPUs.
+//!
+//! ## Minimum Supported Rust Version (MSRV)
+//!
+//! This crate is guaranteed to compile on stable Rust 1.65 and up. It might
+//! compile with older versions but that may change in any new patch release.
+//!
+//! ## Feature Flags
+#![doc = document_features::document_features!()]
+#![doc(html_logo_url = "https://avatars.githubusercontent.com/u/46717278")]
+#![allow(asm_sub_register, named_asm_labels)]
 #![feature(asm_experimental_arch, naked_functions)]
-#![allow(asm_sub_register)]
-// required due to: https://github.com/rust-lang/rust/pull/87324
-#![allow(named_asm_labels)]
+#![no_std]
 
 use core::arch::asm;
 
+pub use macros::{entry, exception, interrupt, pre_init};
 pub use r0::{init_data, zero_bss};
-pub use xtensa_lx_rt_proc_macros::{entry, exception, interrupt, pre_init};
+pub use xtensa_lx;
 
 pub mod exception;
 pub mod interrupt;
@@ -139,6 +148,7 @@ pub extern "Rust" fn default_mem_hook() -> bool {
     true // default to zeroing bss & initializing data
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! cfg_asm {
     (@inner, [$($x:tt)*], [$($opts:tt)*], ) => {
