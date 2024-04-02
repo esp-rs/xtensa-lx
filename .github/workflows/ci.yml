@@ -43,27 +43,37 @@ jobs:
       - name: check (all features)
         run: cd xtensa-lx/ && cargo build --features=spin
 
-  # xtensa-lx-rt:
-  #   runs-on: ubuntu-latest
-  #
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       chip: ["esp32", "esp32s2", "esp32s3"]
-  #
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: esp-rs/xtensa-toolchain@v1.5
-  #       with:
-  #         default: true
-  #         ldproxy: false
-  #     - uses: Swatinem/rust-cache@v2
-  #
-  #     # Build the 'xtensa-lx-rt' package:
-  #     - name: check (${{ matrix.chip }}, no features)
-  #       run: cd xtensa-lx-rt/ && cargo build --features=${{ matrix.chip }}
-  #     - name: check (${{ matrix.chip }}, all features)
-  #       run: cd xtensa-lx-rt/ && cargo build --features=${{ matrix.chip }},float-save-restore
+  xtensa-lx-rt:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        chip: ["esp32", "esp32s2", "esp32s3"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: esp-rs/xtensa-toolchain@v1.5
+        with:
+          default: true
+          ldproxy: false
+      - uses: Swatinem/rust-cache@v2
+
+      # Build the 'xtensa-lx-rt' package:
+      - name: check (${{ matrix.chip }}, no features)
+        run: |
+          cd xtensa-lx-rt
+          cargo build -Zbuild-std=core \
+            --target=xtensa-${{ matrix.chip }}-none-elf \
+            --features=${{ matrix.chip }}
+      - name: check (${{ matrix.chip }}, all features)
+        run: |
+          cd xtensa-lx-rt
+          cargo build -Zbuild-std=core \
+            --target=xtensa-${{ matrix.chip }}-none-elf \
+            --features=${{ matrix.chip }},float-save-restore
 
   # --------------------------------------------------------------------------
   # Lint
