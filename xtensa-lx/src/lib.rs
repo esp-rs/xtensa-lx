@@ -1,6 +1,16 @@
-#![no_std]
+//! Low-level access to Xtensa LX processors and peripherals.
+//!
+//! ## Minimum Supported Rust Version (MSRV)
+//!
+//! This crate is guaranteed to compile on stable Rust 1.65 and up. It might
+//! compile with older versions but that may change in any new patch release.
+//!
+//! ## Feature Flags
+#![doc = document_features::document_features!()]
+#![doc(html_logo_url = "https://avatars.githubusercontent.com/u/46717278")]
 #![allow(asm_sub_register)]
 #![feature(asm_experimental_arch)]
+#![no_std]
 
 use core::arch::asm;
 
@@ -11,8 +21,11 @@ pub mod timer;
 #[macro_use]
 mod macros;
 
+const DCR_ENABLEOCD: u32 = 0x01;
+const XDM_OCD_DCR_SET: u32 = 0x10200C;
+
 /// Move the vector base
-#[inline]
+#[inline(always)]
 pub unsafe fn set_vecbase(base: *const u32) {
     asm!("wsr.vecbase {0}", in(reg) base, options(nostack));
 }
@@ -71,18 +84,15 @@ pub fn get_program_counter() -> *const u32 {
 }
 
 /// Get the id of the current core
-#[inline]
+#[inline(always)]
 pub fn get_processor_id() -> u32 {
     let mut x: u32;
     unsafe { asm!("rsr.prid {0}", out(reg) x, options(nostack)) };
     x
 }
 
-const XDM_OCD_DCR_SET: u32 = 0x10200C;
-const DCR_ENABLEOCD: u32 = 0x01;
-
 /// Returns true if a debugger is attached
-#[inline]
+#[inline(always)]
 pub fn is_debugger_attached() -> bool {
     let mut x: u32;
     unsafe { asm!("rer {0}, {1}", out(reg) x, in(reg) XDM_OCD_DCR_SET, options(nostack)) };
