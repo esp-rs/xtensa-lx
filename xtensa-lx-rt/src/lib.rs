@@ -12,7 +12,10 @@
 #![feature(asm_experimental_arch, naked_functions)]
 #![no_std]
 
-use core::arch::asm;
+use core::{
+    arch::asm,
+    ptr::{addr_of, addr_of_mut},
+};
 
 pub use macros::{entry, exception, interrupt, pre_init};
 pub use r0::{init_data, zero_bss};
@@ -58,11 +61,11 @@ pub unsafe extern "C" fn Reset() -> ! {
     __pre_init();
 
     if __zero_bss() {
-        r0::zero_bss(&mut _bss_start, &mut _bss_end);
+        r0::zero_bss(addr_of_mut!(_bss_start), addr_of_mut!(_bss_end));
     }
 
     if __init_data() {
-        r0::init_data(&mut _data_start, &mut _data_end, &_sidata);
+        r0::init_data(addr_of_mut!(_data_start), addr_of_mut!(_data_end), &_sidata);
     }
 
     // Copy of data segment is done by bootloader
@@ -72,7 +75,7 @@ pub unsafe extern "C" fn Reset() -> ! {
     reset_internal_timers();
 
     // move vec table
-    set_vecbase(&_init_start as *const u32);
+    set_vecbase(addr_of!(_init_start) as *const u32);
 
     __post_init();
 
