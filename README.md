@@ -1,5 +1,11 @@
 # xtensa-lx crates
 
+---
+
+## This project has moved! It can now be found in the [esp-rs/esp-hal](https://github.com/esp-rs/esp-hal/) repository.
+
+---
+
 This repository contains various crates useful for writing Rust programs
 on xtensa-lx microcontrollers:
 
