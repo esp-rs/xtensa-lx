@@ -3,13 +3,11 @@
 This repository contains various crates useful for writing Rust programs
 on xtensa-lx microcontrollers:
 
-* [`xtensa-lx`]: CPU peripheral access and intrinsics.
-* [`xtensa-lx-rt`]: Startup code and interrupt handling.
-* [`core-isa-parser`]: A parser for XCHAL ISA configuration files.
+- [`xtensa-lx`]: CPU peripheral access and intrinsics.
+- [`xtensa-lx-rt`]: Startup code and interrupt handling.
 
 [`xtensa-lx`]: https://crates.io/crates/xtensa-lx
 [`xtensa-lx-rt`]: https://crates.io/crates/xtensa-lx-rt
-[`core-isa-parser`]: https://crates.io/crates/core-isa-parser
 
 ### Contribution
 
