@@ -21,7 +21,8 @@ xtensa-lx         = { version = "0.9.0", path = "../xtensa-lx" }
 
 [build-dependencies]
 core-isa-parser = { version = "0.2.0", path = "../core-isa-parser" }
-minijinja       = "1.0.16"
+minijinja       = "2.0.3"
+toml            = "0.8.14"
 
 [features]
 ## Save and restore float registers for exceptions

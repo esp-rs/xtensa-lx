@@ -7,13 +7,14 @@ use std::{collections::HashMap, env, fs, path::PathBuf, str::FromStr};
 use anyhow::Result;
 use enum_as_inner::EnumAsInner;
 use regex::Regex;
+use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumIter, EnumString};
 
 /// The chips which are present in the xtensa-overlays repository
 ///
 /// When `.to_string()` is called on a variant, the resulting string is the path
 /// to the chip's corresponding directory.
-#[derive(Debug, Clone, Copy, PartialEq, Display, EnumIter)]
+#[derive(Debug, Clone, Copy, PartialEq, Display, EnumIter, Deserialize, Serialize)]
 pub enum Chip {
     #[strum(to_string = "xtensa_esp32")]
     Esp32,
@@ -36,7 +37,7 @@ impl Chip {
 }
 
 /// The valid interrupt types declared in the `core-isa.h` headers
-#[derive(Debug, Clone, Copy, PartialEq, EnumString)]
+#[derive(Debug, Clone, Copy, PartialEq, EnumString, Deserialize, Serialize)]
 pub enum InterruptType {
     #[strum(serialize = "XTHAL_INTTYPE_EXTERN_EDGE")]
     ExternEdge,
@@ -55,7 +56,7 @@ pub enum InterruptType {
 }
 
 /// The allowable value types for definitions
-#[derive(Debug, Clone, PartialEq, EnumAsInner)]
+#[derive(Debug, Clone, PartialEq, EnumAsInner, Deserialize, Serialize)]
 pub enum Value {
     Integer(i64),
     Interrupt(InterruptType),

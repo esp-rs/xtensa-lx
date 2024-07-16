@@ -69,6 +69,9 @@ fn handle_esp32() {
     };
     let isa_config = get_config(chip).expect("Unable to parse ISA config");
 
+    let mut f = File::create(format!("config/{chip}.toml")).unwrap();
+    write!(f, "{}", toml::to_string(&isa_config).unwrap()).unwrap();
+
     inject_cfgs(&isa_config, &features_to_disable);
     inject_cpu_cfgs(&isa_config);
     generate_exception_x(&out, &isa_config);
