@@ -1,33 +1,76 @@
 use std::{
     collections::{HashMap, HashSet},
     env,
-    fs::File,
+    fs::{self, File},
     io::Write,
     path::PathBuf,
 };
 
-use core_isa_parser::{get_config, Chip, Value};
+use anyhow::Result;
+use enum_as_inner::EnumAsInner;
 use minijinja::{context, Environment};
+use serde::Deserialize;
+use strum::{Display, EnumIter, EnumString};
 
-fn main() {
+/// The chips which are present in the xtensa-overlays repository
+///
+/// When `.to_string()` is called on a variant, the resulting string is the path
+/// to the chip's corresponding directory.
+#[derive(Debug, Clone, Copy, PartialEq, Display, EnumIter, Deserialize)]
+enum Chip {
+    #[strum(to_string = "xtensa_esp32")]
+    Esp32,
+    #[strum(to_string = "xtensa_esp32s2")]
+    Esp32s2,
+    #[strum(to_string = "xtensa_esp32s3")]
+    Esp32s3,
+}
+
+/// The valid interrupt types declared in the `core-isa.h` headers
+#[derive(Debug, Clone, Copy, PartialEq, EnumString, Deserialize)]
+enum InterruptType {
+    #[strum(serialize = "XTHAL_INTTYPE_EXTERN_EDGE")]
+    ExternEdge,
+    #[strum(serialize = "XTHAL_INTTYPE_EXTERN_LEVEL")]
+    ExternLevel,
+    #[strum(serialize = "XTHAL_INTTYPE_NMI")]
+    Nmi,
+    #[strum(serialize = "XTHAL_INTTYPE_PROFILING")]
+    Profiling,
+    #[strum(serialize = "XTHAL_INTTYPE_SOFTWARE")]
+    Software,
+    #[strum(serialize = "XTHAL_INTTYPE_TIMER")]
+    Timer,
+    #[strum(serialize = "XTHAL_TIMER_UNCONFIGURED")]
+    TimerUnconfigured,
+}
+
+/// The allowable value types for definitions
+#[derive(Debug, Clone, PartialEq, EnumAsInner, Deserialize)]
+enum Value {
+    Integer(i64),
+    Interrupt(InterruptType),
+    String(String),
+}
+
+fn main() -> Result<()> {
     let out = &PathBuf::from(env::var_os("OUT_DIR").unwrap());
 
     // Put the linker script somewhere the linker can find it
-    File::create(out.join("link.x"))
-        .unwrap()
-        .write_all(include_bytes!("xtensa.in.x"))
-        .unwrap();
-
     println!("cargo:rustc-link-search={}", out.display());
 
-    handle_esp32();
+    File::create(out.join("link.x"))?.write_all(include_bytes!("xtensa.in.x"))?;
+
+    handle_esp32()?;
 
     // Only re-run the build script when xtensa.in.x is changed,
     // instead of when any part of the source code changes.
     println!("cargo:rerun-if-changed=xtensa.in.x");
+
+    Ok(())
 }
 
-fn handle_esp32() {
+fn handle_esp32() -> Result<()> {
     let out = &PathBuf::from(env::var_os("OUT_DIR").unwrap());
 
     let rustflags = env::var_os("CARGO_ENCODED_RUSTFLAGS")
@@ -67,43 +110,50 @@ fn handle_esp32() {
         (false, false, true) => Chip::Esp32s3,
         _ => panic!("Either the esp32, esp32s2, esp32s3 feature must be enabled"),
     };
-    let isa_config = get_config(chip).expect("Unable to parse ISA config");
+
+    let isa_toml = fs::read_to_string(format!("config/{chip}.toml"))?;
+    let isa_config: HashMap<String, Value> = toml::from_str(&isa_toml)?;
 
     inject_cfgs(&isa_config, &features_to_disable);
     inject_cpu_cfgs(&isa_config);
-    generate_exception_x(&out, &isa_config);
-    generate_interrupt_level_masks(&out, &isa_config);
+    generate_exception_x(&out, &isa_config)?;
+    generate_interrupt_level_masks(&out, &isa_config)?;
+
+    Ok(())
 }
 
-fn generate_interrupt_level_masks(out: &PathBuf, isa_config: &HashMap<String, Value>) {
-    let mut env = Environment::new();
+fn generate_interrupt_level_masks(
+    out: &PathBuf,
+    isa_config: &HashMap<String, Value>,
+) -> Result<()> {
     let exception_source_template = &include_str!("interrupt_level_masks.rs.jinja")[..];
-    env.add_template("interrupt_level_masks.rs", exception_source_template)
-        .unwrap();
+
+    let mut env = Environment::new();
+    env.add_template("interrupt_level_masks.rs", exception_source_template)?;
+
     let template = env.get_template("interrupt_level_masks.rs").unwrap();
-    let exception_source = template
-        .render(context! {
-            XCHAL_INTLEVEL1_MASK => isa_config.get("XCHAL_INTLEVEL1_MASK").unwrap().as_integer(),
-            XCHAL_INTLEVEL2_MASK => isa_config.get("XCHAL_INTLEVEL2_MASK").unwrap().as_integer(),
-            XCHAL_INTLEVEL3_MASK => isa_config.get("XCHAL_INTLEVEL3_MASK").unwrap().as_integer(),
-            XCHAL_INTLEVEL4_MASK => isa_config.get("XCHAL_INTLEVEL4_MASK").unwrap().as_integer(),
-            XCHAL_INTLEVEL5_MASK => isa_config.get("XCHAL_INTLEVEL5_MASK").unwrap().as_integer(),
-            XCHAL_INTLEVEL6_MASK => isa_config.get("XCHAL_INTLEVEL6_MASK").unwrap().as_integer(),
-            XCHAL_INTLEVEL7_MASK => isa_config.get("XCHAL_INTLEVEL7_MASK").unwrap().as_integer(),
-        })
-        .unwrap();
-    File::create(out.join("interrupt_level_masks.rs"))
-        .unwrap()
-        .write_all(exception_source.as_bytes())
-        .unwrap();
+    let exception_source = template.render(context! {
+        XCHAL_INTLEVEL1_MASK => isa_config.get("XCHAL_INTLEVEL1_MASK").unwrap().as_integer(),
+        XCHAL_INTLEVEL2_MASK => isa_config.get("XCHAL_INTLEVEL2_MASK").unwrap().as_integer(),
+        XCHAL_INTLEVEL3_MASK => isa_config.get("XCHAL_INTLEVEL3_MASK").unwrap().as_integer(),
+        XCHAL_INTLEVEL4_MASK => isa_config.get("XCHAL_INTLEVEL4_MASK").unwrap().as_integer(),
+        XCHAL_INTLEVEL5_MASK => isa_config.get("XCHAL_INTLEVEL5_MASK").unwrap().as_integer(),
+        XCHAL_INTLEVEL6_MASK => isa_config.get("XCHAL_INTLEVEL6_MASK").unwrap().as_integer(),
+        XCHAL_INTLEVEL7_MASK => isa_config.get("XCHAL_INTLEVEL7_MASK").unwrap().as_integer(),
+    })?;
+
+    File::create(out.join("interrupt_level_masks.rs"))?.write_all(exception_source.as_bytes())?;
+
+    Ok(())
 }
 
-fn generate_exception_x(out: &PathBuf, isa_config: &HashMap<String, Value>) {
-    let mut env = Environment::new();
+fn generate_exception_x(out: &PathBuf, isa_config: &HashMap<String, Value>) -> Result<()> {
     let exception_source_template = &include_str!("exception-esp32.x.jinja")[..];
-    env.add_template("exception.x", exception_source_template)
-        .unwrap();
-    let template = env.get_template("exception.x").unwrap();
+
+    let mut env = Environment::new();
+    env.add_template("exception.x", exception_source_template)?;
+
+    let template = env.get_template("exception.x")?;
     let exception_source = template.render(
         context! {
             XCHAL_WINDOW_OF4_VECOFS => isa_config.get("XCHAL_WINDOW_OF4_VECOFS").unwrap().as_integer(),
@@ -122,11 +172,11 @@ fn generate_exception_x(out: &PathBuf, isa_config: &HashMap<String, Value>) {
             XCHAL_USER_VECOFS => isa_config.get("XCHAL_USER_VECOFS").unwrap().as_integer(),
             XCHAL_DOUBLEEXC_VECOFS => isa_config.get("XCHAL_DOUBLEEXC_VECOFS").unwrap().as_integer(),
         }
-    ).unwrap();
-    File::create(out.join("exception.x"))
-        .unwrap()
-        .write_all(exception_source.as_bytes())
-        .unwrap();
+    )?;
+
+    File::create(out.join("exception.x"))?.write_all(exception_source.as_bytes())?;
+
+    Ok(())
 }
 
 fn inject_cfgs(isa_config: &HashMap<String, Value>, disabled_features: &HashSet<String>) {
